@@ -11,7 +11,7 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "ZenhuzainiEmarsysSdkWarapperPlugin.podspec"
+    "SalurusrinivasaraoEmarsysSdkWrapperPlugin.podspec"
   ],
   "author": "srinivassaluru",
   "license": "MIT",
