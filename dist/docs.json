@@ -1,0 +1,462 @@
+{
+  "api": {
+    "name": "EmarsysSDKCustomPlugin",
+    "slug": "emarsyssdkcustomplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "echo",
+        "signature": "(options: { value: string; }) => Promise<{ value: string; }>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ value: string; }"
+          }
+        ],
+        "returns": "Promise<{ value: string; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "echo"
+      },
+      {
+        "name": "addListener",
+        "signature": "(eventName: 'pushMessageEvent', listenerFunc: (event: PushMessageEvent) => void) => Promise<PluginListenerHandle> & PluginListenerHandle",
+        "parameters": [
+          {
+            "name": "eventName",
+            "docs": "",
+            "type": "'pushMessageEvent'"
+          },
+          {
+            "name": "listenerFunc",
+            "docs": "",
+            "type": "(event: PushMessageEvent) => void"
+          }
+        ],
+        "returns": "Promise<PluginListenerHandle> & PluginListenerHandle",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PluginListenerHandle",
+          "PushMessageEvent"
+        ],
+        "slug": "addlistenerpushmessageevent"
+      },
+      {
+        "name": "getUUID",
+        "signature": "(value: string) => Promise<{ value: string; }>",
+        "parameters": [
+          {
+            "name": "value",
+            "docs": "",
+            "type": "string"
+          }
+        ],
+        "returns": "Promise<{ value: string; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "getuuid"
+      },
+      {
+        "name": "requestPermissions",
+        "signature": "() => Promise<PermissionStatus>",
+        "parameters": [],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PermissionStatus"
+        ],
+        "slug": "requestpermissions"
+      },
+      {
+        "name": "checkPermissions",
+        "signature": "() => Promise<PermissionStatus>",
+        "parameters": [],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PermissionStatus"
+        ],
+        "slug": "checkpermissions"
+      },
+      {
+        "name": "setContact",
+        "signature": "(options: SetContactOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "SetContactOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "SetContactOptions"
+        ],
+        "slug": "setcontact"
+      },
+      {
+        "name": "getPushToken",
+        "signature": "() => Promise<TokenResult>",
+        "parameters": [],
+        "returns": "Promise<TokenResult>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "TokenResult"
+        ],
+        "slug": "getpushtoken"
+      },
+      {
+        "name": "register",
+        "signature": "() => Promise<TokenResult>",
+        "parameters": [],
+        "returns": "Promise<TokenResult>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "TokenResult"
+        ],
+        "slug": "register"
+      },
+      {
+        "name": "checkPermissions",
+        "signature": "() => Promise<PermissionStatus>",
+        "parameters": [],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PermissionStatus"
+        ],
+        "slug": "checkpermissions"
+      },
+      {
+        "name": "clearContact",
+        "signature": "(options: SetContactOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "SetContactOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "SetContactOptions"
+        ],
+        "slug": "clearcontact"
+      },
+      {
+        "name": "setPushTokenFirebase",
+        "signature": "(data: { value: string; }) => Promise<ITokenInitializationStatus>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "{ value: string; }"
+          }
+        ],
+        "returns": "Promise<ITokenInitializationStatus>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "ITokenInitializationStatus"
+        ],
+        "slug": "setpushtokenfirebase"
+      },
+      {
+        "name": "setPushMessage",
+        "signature": "(data: PushMessageDTO) => Promise<{ value: PushMessageDTO; }>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "PushMessageDTO"
+          }
+        ],
+        "returns": "Promise<{ value: PushMessageDTO; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PushMessageDTO"
+        ],
+        "slug": "setpushmessage"
+      },
+      {
+        "name": "getUserInfo",
+        "signature": "(data: UserInformationDTO) => Promise<{ value: unknown; }>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "UserInformationDTO"
+          }
+        ],
+        "returns": "Promise<{ value: unknown; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "UserInformationDTO"
+        ],
+        "slug": "getuserinfo"
+      },
+      {
+        "name": "setUser",
+        "signature": "(data: { value: string; }) => Promise<void>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "{ value: string; }"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "setuser"
+      },
+      {
+        "name": "clearUser",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "clearuser"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [
+    {
+      "name": "PluginListenerHandle",
+      "slug": "pluginlistenerhandle",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "remove",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "() => Promise<void>"
+        }
+      ]
+    },
+    {
+      "name": "PushMessageEvent",
+      "slug": "pushmessageevent",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "eventName",
+          "tags": [
+            {
+              "text": "1.0.0",
+              "name": "since"
+            }
+          ],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "data",
+          "tags": [
+            {
+              "text": "1.0.0",
+              "name": "since"
+            }
+          ],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ key: string; value: string; }[]"
+        }
+      ]
+    },
+    {
+      "name": "PermissionStatus",
+      "slug": "permissionstatus",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "receive",
+          "tags": [
+            {
+              "text": "1.0.0",
+              "name": "since"
+            }
+          ],
+          "docs": "",
+          "complexTypes": [
+            "PermissionState"
+          ],
+          "type": "PermissionState"
+        }
+      ]
+    },
+    {
+      "name": "SetContactOptions",
+      "slug": "setcontactoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "contactFieldValue",
+          "tags": [
+            {
+              "text": "1.0.0",
+              "name": "since"
+            }
+          ],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "TokenResult",
+      "slug": "tokenresult",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "token",
+          "tags": [
+            {
+              "text": "1.0.0",
+              "name": "since"
+            }
+          ],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ITokenInitializationStatus",
+      "slug": "itokeninitializationstatus",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "status",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "isError",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "PushMessageDTO",
+      "slug": "pushmessagedto",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "title",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "text",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "image",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "UserInformationDTO",
+      "slug": "userinformationdto",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "firebaseToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "userId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "enums": [],
+  "typeAliases": [
+    {
+      "name": "PermissionState",
+      "slug": "permissionstate",
+      "docs": "",
+      "types": [
+        {
+          "text": "'prompt'",
+          "complexTypes": []
+        },
+        {
+          "text": "'prompt-with-rationale'",
+          "complexTypes": []
+        },
+        {
+          "text": "'granted'",
+          "complexTypes": []
+        },
+        {
+          "text": "'denied'",
+          "complexTypes": []
+        }
+      ]
+    }
+  ],
+  "pluginConfigs": []
+}
