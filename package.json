@@ -1,5 +1,5 @@
 {
-  "name": "@salurusrinivasarao/emarsys-sdk-warapper-plugin",
+  "name": "@salurusrinivasarao/emarsys-sdk-wrapper-plugin",
   "version": "0.0.1",
   "description": "Custom Capacitor Plugin To have communication with Emarsys SDK",
   "main": "dist/plugin.cjs.js",
@@ -17,10 +17,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/srinivassaluru/emarsys-sdk-warapper-plugin.git"
+    "url": "git+https://github.com/srinivassaluru/emarsys-sdk-wrapper-plugin.git"
   },
   "bugs": {
-    "url": "https://github.com/srinivassaluru/emarsys-sdk-warapper-plugin.git/issues"
+    "url": "https://github.com/srinivassaluru/emarsys-sdk-wrapper-plugin.git/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -79,7 +79,7 @@
       "src": "android"
     }
   },
-  "homepage": "https://github.com/srinivassaluru/emarsys-sdk-warapper-plugin#readme",
+  "homepage": "https://github.com/srinivassaluru/emarsys-sdk-wrapper-plugin#readme",
   "directories": {
     "example": "example"
   }
