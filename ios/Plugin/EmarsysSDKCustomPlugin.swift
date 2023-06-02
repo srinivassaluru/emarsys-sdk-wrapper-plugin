@@ -17,22 +17,57 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
     private var messageStack = [StackedMessage]();
     
     override public func load() {
-        NSLog("Starting Application....")
+        NSLog("Starting Application....With Custom Capacitor plugin Development IOS.")
         NotificationCenter.default.addObserver(self, selector: #selector(self.didRegisterWithToken(notification:)), name: .emarsysRegisterWithToken, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.didFailedToRegister(notification:)), name: .emarsysRegisterFailed, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.didReceiveRemoteNotification(notification:)), name: .emarsysReceivedRemoteNotification, object: nil)
         
-        //           let merchantId = self.getConfigValue("merchantId") as? String;
-        let mobileEngageApplicationCode = "EMS8C-8F06D";
-        let merchantId = "1F634D68EE4C9C7A";
-//        let consoleLogLevels = self.getConfigValue("consoleLogLevels") as? [String];
+        // Hard Code Aproach For Unit Testing  Begin
+        // let mobileEngageApplicationCode = "EMS4B-5A53D";
+        // let merchantId = "1F634D68EE4C9C7A";
+    
+        // let config = EMSConfig.make { builder in
+        //     builder.setMobileEngageApplicationCode(mobileEngageApplicationCode)
+        //     builder.setMerchantId(merchantId)
+        //     builder.enableConsoleLogLevels([EMSLogLevel.info, EMSLogLevel.warn, EMSLogLevel.error, EMSLogLevel.basic]);
+        // }
+        // Hard Code Approach for Unit Testing End
+
+        let mobileEngageApplicationCode = self.getConfigValue("mobileEngageApplicationCode") as? String;
+        let merchantId = self.getConfigValue("merchantId") as? String;
+        let consoleLogLevels = self.getConfigValue("consoleLogLevels") as? [String];
         
         let config = EMSConfig.make { builder in
-            builder.setMobileEngageApplicationCode(mobileEngageApplicationCode)
-            builder.setMerchantId(merchantId)
-            builder.enableConsoleLogLevels([EMSLogLevel.info, EMSLogLevel.warn, EMSLogLevel.error, EMSLogLevel.basic]);
+            if(mobileEngageApplicationCode != nil) {
+                builder.setMobileEngageApplicationCode(mobileEngageApplicationCode!)
+            }
+            if(merchantId != nil) {
+                builder.setMerchantId(merchantId!)
+            }
+            if(consoleLogLevels != nil && consoleLogLevels!.count > 0) {
+                var logs = [EMSLogLevelProtocol]();
+                consoleLogLevels?.forEach { log in
+                    switch log {
+                    case "trace":
+                        logs.append(EMSLogLevel.trace);
+                    case "debug":
+                        logs.append(EMSLogLevel.debug);
+                    case "info":
+                        logs.append(EMSLogLevel.info);
+                    case "warn":
+                        logs.append(EMSLogLevel.warn);
+                    case "error":
+                        logs.append(EMSLogLevel.error);
+                    case "basic":
+                        logs.append(EMSLogLevel.basic);
+                    default:
+                        print("Unknown LogLevel: " + log)
+                    }
+                }
+                builder.enableConsoleLogLevels(logs);
+            }
         }
         
         Emarsys.setup(config: config);
@@ -98,6 +133,13 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
             
             if granted {
                 result = .granted
+                if(self.savedRegisterCall != nil) {
+                    return
+                }
+                self.savedRegisterCall = call;
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
             }
             
             call.resolve(["receive": result.rawValue])
