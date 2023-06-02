@@ -1,3 +1,5 @@
+/// <reference types="@capacitor/cli" />
+
 import type {
   SetContactOptions
 } from './interfaces/base';
@@ -5,6 +7,19 @@ import type { PluginListenerHandle } from '@capacitor/core';
 
 import type { PushMessageEvent, TokenResult } from './interfaces/push';
 import type { ITokenInitializationStatus, PushMessageDTO, UserInformationDTO } from './interfaces/pushAndroid';
+
+
+type ConsoleLogLevels = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'basic';
+
+declare module '@capacitor/cli' {
+  export interface PluginsConfig {
+    EmarsysSDKCustom?: {
+      mobileEngageApplicationCode?: string;
+      merchantId?: string;
+      consoleLogLevels?: ConsoleLogLevels[];
+    };
+  }
+}
 
 export interface EmarsysSDKCustomPlugin {
   
