@@ -62,6 +62,12 @@ export interface EmarsysSDKCustomPlugin {
   }): Promise<void>;
 
   clearUser():Promise<void>;
+
+  getDeviceInformation(options?: {
+    value?: string;
+  }): Promise<{ value: string }>;
+
+  trackEvent(options?: { eventName: string, eventAttributes: any }): Promise<{ value: string }>;
 // ---------------------------
 
 }
