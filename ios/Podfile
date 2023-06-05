@@ -10,6 +10,9 @@ end
 target 'Plugin' do
   capacitor_pods
   pod 'EmarsysSDK', '3.2.3'
+  pod 'Firebase/Messaging'
+  pod 'FirebaseMessaging'
+  pod 'Firebase/InAppMessaging'
 end
 
 target 'PluginTests' do

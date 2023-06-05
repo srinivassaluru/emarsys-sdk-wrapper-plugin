@@ -28,6 +28,8 @@ npx cap sync
 * [`getUserInfo(...)`](#getuserinfo)
 * [`setUser(...)`](#setuser)
 * [`clearUser()`](#clearuser)
+* [`getDeviceInformation(...)`](#getdeviceinformation)
+* [`trackEvent(...)`](#trackevent)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -226,6 +228,36 @@ setUser(data: { value: string; }) => Promise<void>
 ```typescript
 clearUser() => Promise<void>
 ```
+
+--------------------
+
+
+### getDeviceInformation(...)
+
+```typescript
+getDeviceInformation(options?: { value?: string | undefined; } | undefined) => Promise<{ value: string; }>
+```
+
+| Param         | Type                             |
+| ------------- | -------------------------------- |
+| **`options`** | <code>{ value?: string; }</code> |
+
+**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
+
+--------------------
+
+
+### trackEvent(...)
+
+```typescript
+trackEvent(options?: { eventName: string; eventAttributes: any; } | undefined) => Promise<{ value: string; }>
+```
+
+| Param         | Type                                                      |
+| ------------- | --------------------------------------------------------- |
+| **`options`** | <code>{ eventName: string; eventAttributes: any; }</code> |
+
+**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
 
 --------------------
 
