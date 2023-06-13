@@ -68,6 +68,7 @@ export interface EmarsysSDKCustomPlugin {
   }): Promise<{ value: string }>;
 
   trackEvent(options?: { eventName: string, eventAttributes: any }): Promise<{ value: string }>;
+  loadInlineInapp(data: { inAppName: string }): Promise<void>;
 // ---------------------------
 
 }

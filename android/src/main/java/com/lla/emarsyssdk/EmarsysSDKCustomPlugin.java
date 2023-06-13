@@ -1,47 +1,49 @@
 package com.lla.emarsyssdk;
 
 import android.util.Log;
-
+import com.emarsys.Emarsys;
+import com.emarsys.config.EmarsysConfig;
+import com.emarsys.inapp.ui.InlineInAppView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
-
-import com.emarsys.Emarsys;
-import com.emarsys.config.EmarsysConfig;
-
-import com.emarsys.inapp.ui.InlineInAppView;
-
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 
 @CapacitorPlugin(name = "EmarsysSDKCustom")
 public class EmarsysSDKCustomPlugin extends Plugin {
     public EmarsysConfig config;
-    public String emarrsysDeviceInformationConfig;
+    public String emarsysDeviceInformationConfig;
     private EmarsysSDKCustom implementation = new EmarsysSDKCustom();
     EmarsysPushNotification emarsysPushNotification = new EmarsysPushNotification();
+    InlineInAppView inlineInAppView;
 
     @Override
     public void load() {
         Log.d("INITIALIZE EMARSYS", "LOADING ...");
 
-        config = new EmarsysConfig.Builder()
+        config =
+            new EmarsysConfig.Builder()
                 .application(this.getActivity().getApplication()) //
                 .applicationCode("EMSD5-99166")
                 .merchantId("1F634D68EE4C9C7A")
                 .enableVerboseConsoleLogging()
                 .build();
 
-        Log.d("Emersys", config.toString());
-
+        Log.d("Emarsys", config.toString());
         Emarsys.setup(config);
-        Log.d("Emersys", "EMERSYS has been configured... ");
-        InlineInAppView inlineInAppView = new InlineInAppView(getContext());
-        inlineInAppView.loadInApp("Emarsys_Inapp");
-//        emarsysPushNotification.createNotificationChannel();
+
+        this.loadInappHandler();
+        this.loadPushHandler();
+
+        this.emarsysDeviceInformationConfig = Emarsys.getConfig().getHardwareId();
+
+        inlineInAppView = new InlineInAppView(getContext());
+        inlineInAppView.loadInApp("login");
     }
 
     @PluginMethod
@@ -53,10 +55,9 @@ public class EmarsysSDKCustomPlugin extends Plugin {
         call.resolve(ret);
     }
 
-
     // setPushTokenFirebase
     @PluginMethod
-    public void setPushTokenFirebase(PluginCall call){
+    public void setPushTokenFirebase(PluginCall call) {
         String value = call.getString("value");
         System.out.println("get initialization 1 " + value);
 
@@ -70,20 +71,20 @@ public class EmarsysSDKCustomPlugin extends Plugin {
     }
 
     @PluginMethod
-    public void setUser(PluginCall call){
+    public void setUser(PluginCall call) {
         String value = call.getString("value");
         emarsysPushNotification.setContactUser(value);
     }
 
     @PluginMethod
-    public void clearUser(PluginCall call){
+    public void clearUser(PluginCall call) {
         String value = call.getString("value");
         emarsysPushNotification.clearContactUser();
     }
 
     @PluginMethod
     public void getDeviceInformation(PluginCall call) {
-        String value = this.emarrsysDeviceInformationConfig;
+        String value = this.emarsysDeviceInformationConfig;
 
         JSObject ret = new JSObject();
         ret.put("value", implementation.echo(value));
@@ -96,15 +97,66 @@ public class EmarsysSDKCustomPlugin extends Plugin {
         String eventAttributes = call.getString("eventAttributes");
         ObjectMapper mapper = new ObjectMapper();
 
-        try{
+        try {
             Map<String, String> mappedEventAtributes = mapper.readValue(eventAttributes, Map.class);
             JSObject ret = new JSObject();
             assert eventName != null;
             Emarsys.trackCustomEvent(eventName, mappedEventAtributes);
 
             call.resolve(ret);
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @PluginMethod
+    public void loadTheInapp(PluginCall call) {
+        String inAppName = call.getString("inAppName");
+
+        InlineInAppView inlineInAppView = new InlineInAppView(getContext());
+        inlineInAppView.loadInApp(inAppName);
+
+        JSObject ret = new JSObject();
+        call.resolve(ret);
+    }
+
+    public void loadInappHandler() {
+        Emarsys.getInApp().setEventHandler((context, s, jsonObject) -> {
+            if (s.equals("DeepLink")) {
+                try {
+                    URL url = new URL(jsonObject.getString("url"));
+                    JSObject dataJson = new JSObject();
+                    dataJson.put("actionType", s);
+                    dataJson.put("url", url);
+                    dataJson.put("pushType", "inappPushNotification");
+                    dataJson.put("device", "android");;
+
+                    notifyListeners("pushMessageEvent", dataJson);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void loadPushHandler() {
+        Emarsys.getPush().setNotificationEventHandler((context, s, jsonObject) -> {
+            if (s.equals("DeepLink")) {
+                try {
+                    URL url = new URL(jsonObject.getString("url"));
+                    JSObject dataJson = new JSObject();
+                    dataJson.put("actionType", s);
+                    dataJson.put("url", url);
+                    dataJson.put("pushType", "pushNotification");
+                    dataJson.put("device", "android");
+
+                    notifyListeners("pushMessageEvent", dataJson);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
