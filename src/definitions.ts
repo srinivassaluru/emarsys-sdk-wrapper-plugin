@@ -69,6 +69,27 @@ export interface EmarsysSDKCustomPlugin {
 
   trackEvent(options?: { eventName: string, eventAttributes: any }): Promise<{ value: string }>;
   loadInlineInapp(data: { inAppName: string }): Promise<void>;
-// ---------------------------
+
+  addListener(
+    eventName: 'EmarsysInAppDeepLink',
+    listenerFunc: (event: PushMessageEvent) => void,
+  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
+  addListener(
+    eventName: 'EmarsysInAppApplicationEvent',
+    listenerFunc: (event: PushMessageEvent) => void,
+  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
+  addListener(
+    eventName: 'EmarsysPushDeepLink',
+    listenerFunc: (event: PushMessageEvent) => void,
+  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
+  addListener(
+    eventName: 'EmarsysPushApplicationEvent',
+    listenerFunc: (event: PushMessageEvent) => void,
+  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
+// --------------------------
 
 }
