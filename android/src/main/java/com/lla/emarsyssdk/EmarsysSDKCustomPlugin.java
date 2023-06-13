@@ -10,8 +10,15 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @CapacitorPlugin(name = "EmarsysSDKCustom")
@@ -120,6 +127,17 @@ public class EmarsysSDKCustomPlugin extends Plugin {
         call.resolve(ret);
     }
 
+    public static JSObject fromJSONObject(JSONObject obj) throws JSONException {
+        Iterator<String> keysIter = obj.keys();
+        List<String> keys = new ArrayList<>();
+        while (keysIter.hasNext()) {
+            keys.add(keysIter.next());
+        }
+
+        return new JSObject(obj, keys.toArray(new String[keys.size()]));
+    }
+
+    //    this will only listen Deeplink or AppEvent
     public void loadInappHandler() {
         Emarsys.getInApp().setEventHandler((context, s, jsonObject) -> {
             if (s.equals("DeepLink")) {
@@ -128,14 +146,28 @@ public class EmarsysSDKCustomPlugin extends Plugin {
                     JSObject dataJson = new JSObject();
                     dataJson.put("actionType", s);
                     dataJson.put("url", url);
-                    dataJson.put("pushType", "inappPushNotification");
-                    dataJson.put("device", "android");;
+                    dataJson.put("pushType", "inapp");
+                    dataJson.put("device", "android");
 
-                    notifyListeners("pushMessageEvent", dataJson);
+                    notifyListeners("EmarsysInAppDeepLink", dataJson);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }else{
+                try {
+                    JSObject dataJson = this.fromJSONObject(jsonObject);
+
+                    dataJson.put("actionType", "AppEvent");
+                    dataJson.put("pushType", "inapp");
+                    dataJson.put("device", "android");
+                    dataJson.put("eventName", s);
+
+                    notifyListeners("EmarsysInAppApplicationEvent", dataJson);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
@@ -151,11 +183,25 @@ public class EmarsysSDKCustomPlugin extends Plugin {
                     dataJson.put("pushType", "pushNotification");
                     dataJson.put("device", "android");
 
-                    notifyListeners("pushMessageEvent", dataJson);
+                    notifyListeners("EmarsysPushDeepLink", dataJson);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }else{
+                try {
+                    JSObject dataJson = this.fromJSONObject(jsonObject);
+
+                    dataJson.put("actionType", "AppEvent");
+                    dataJson.put("pushType", "pushNotification");
+                    dataJson.put("device", "android");
+                    dataJson.put("eventName", s);
+
+                    notifyListeners("EmarsysPushApplicationEvent", dataJson);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
