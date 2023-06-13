@@ -90,6 +90,11 @@ export interface EmarsysSDKCustomPlugin {
     listenerFunc: (event: PushMessageEvent) => void,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
 
+  addListener(
+    eventName: 'EmarsysPushNotificationReceived',
+    listenerFunc: (event: PushMessageEvent) => void,
+  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
 // --------------------------
 
 }

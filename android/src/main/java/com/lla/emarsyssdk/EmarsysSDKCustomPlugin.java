@@ -1,15 +1,28 @@
 package com.lla.emarsyssdk;
 
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+
 import com.emarsys.Emarsys;
 import com.emarsys.config.EmarsysConfig;
 import com.emarsys.inapp.ui.InlineInAppView;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.getcapacitor.Bridge;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginHandle;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.Permission;
+import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,21 +30,29 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@CapacitorPlugin(name = "EmarsysSDKCustom")
+@CapacitorPlugin(name = "EmarsysSDKCustom", permissions = @Permission(strings = {}, alias = "receive"))
 public class EmarsysSDKCustomPlugin extends Plugin {
     public EmarsysConfig config;
     public String emarsysDeviceInformationConfig;
     private EmarsysSDKCustom implementation = new EmarsysSDKCustom();
-    EmarsysPushNotification emarsysPushNotification = new EmarsysPushNotification();
     InlineInAppView inlineInAppView;
+
+    // to mimick firebase
+    public EmarsysPushNotification emarsysPushNotification;
+    public NotificationManager notificationManager;
+    public static Bridge staticBridge = null;
+    public static RemoteMessage lastMessage = null;
+    private NotificationChannelManager notificationChannelManager;
 
     @Override
     public void load() {
-        Log.d("INITIALIZE EMARSYS", "LOADING ...");
+        notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        emarsysPushNotification = new EmarsysPushNotification();
 
         config =
             new EmarsysConfig.Builder()
@@ -51,6 +72,14 @@ public class EmarsysSDKCustomPlugin extends Plugin {
 
         inlineInAppView = new InlineInAppView(getContext());
         inlineInAppView.loadInApp("login");
+
+        staticBridge = this.bridge;
+        if (lastMessage != null) {
+            fireNotification(lastMessage);
+            lastMessage = null;
+        }
+
+        notificationChannelManager = new NotificationChannelManager(getActivity(), notificationManager, getConfig());
     }
 
     @PluginMethod
@@ -80,13 +109,17 @@ public class EmarsysSDKCustomPlugin extends Plugin {
     @PluginMethod
     public void setUser(PluginCall call) {
         String value = call.getString("value");
-        emarsysPushNotification.setContactUser(value);
+        Integer fieldId = 3;
+        Emarsys.setContact(fieldId, value );
     }
 
+    //Use the clearContact method to remove the device details from the contact record,
+    //for example, if the user signs out of the app,
+    //and they should not receive personalised messages. The CompletionListener is optional.
     @PluginMethod
     public void clearUser(PluginCall call) {
         String value = call.getString("value");
-        emarsysPushNotification.clearContactUser();
+        Emarsys.clearContact();
     }
 
     @PluginMethod
@@ -204,5 +237,85 @@ public class EmarsysSDKCustomPlugin extends Plugin {
 
             }
         });
+    }
+
+    //  -------------------- firebase thingy
+    public static void sendRemoteMessage(RemoteMessage remoteMessage) {
+        EmarsysSDKCustomPlugin pushPlugin = EmarsysSDKCustomPlugin.getPushNotificationsInstance();
+
+        if (pushPlugin != null) {
+            pushPlugin.fireNotification(remoteMessage);
+        } else {
+            lastMessage = remoteMessage;
+        }
+    }
+
+    public void fireNotification(RemoteMessage remoteMessage) {
+        JSObject remoteMessageData = new JSObject();
+
+        JSObject data = new JSObject();
+        remoteMessageData.put("id", remoteMessage.getMessageId());
+
+        for (String key : remoteMessage.getData().keySet()) {
+            Object value = remoteMessage.getData().get(key);
+            data.put(key, value);
+        }
+        remoteMessageData.put("data", data);
+
+        RemoteMessage.Notification notification = remoteMessage.getNotification();
+        if (notification != null) {
+            String title = notification.getTitle();
+            String body = notification.getBody();
+            String[] presentation = getConfig().getArray("presentationOptions");
+
+            if (presentation != null) {
+                if (Arrays.asList(presentation).contains("alert")) {
+                    Bundle bundle = null;
+                    try {
+                        ApplicationInfo applicationInfo = getContext()
+                                .getPackageManager()
+                                .getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA);
+                        bundle = applicationInfo.metaData;
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    int pushIcon = android.R.drawable.ic_dialog_info;
+
+                    if (bundle != null && bundle.getInt("com.google.firebase.messaging.default_notification_icon") != 0) {
+                        pushIcon = bundle.getInt("com.google.firebase.messaging.default_notification_icon");
+                    }
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                            getContext(),
+                            NotificationChannelManager.FOREGROUND_NOTIFICATION_CHANNEL_ID
+                    )
+                            .setSmallIcon(pushIcon)
+                            .setContentTitle(title)
+                            .setContentText(body)
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                    notificationManager.notify(0, builder.build());
+                }
+            }
+            remoteMessageData.put("title", title);
+            remoteMessageData.put("body", body);
+            remoteMessageData.put("click_action", notification.getClickAction());
+
+            Uri link = notification.getLink();
+            if (link != null) {
+                remoteMessageData.put("link", link.toString());
+            }
+        }
+
+        notifyListeners("EmarsysPushNotificationReceived", remoteMessageData, true);
+    }
+
+    public static EmarsysSDKCustomPlugin getPushNotificationsInstance() {
+        if (staticBridge != null && staticBridge.getWebView() != null) {
+            PluginHandle handle = staticBridge.getPlugin("EmarsysSDKCustom");
+            if (handle == null) {
+                return null;
+            }
+            return (EmarsysSDKCustomPlugin) handle.getInstance();
+        }
+        return null;
     }
 }
