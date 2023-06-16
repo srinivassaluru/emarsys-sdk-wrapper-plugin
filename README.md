@@ -30,6 +30,12 @@ npx cap sync
 * [`clearUser()`](#clearuser)
 * [`getDeviceInformation(...)`](#getdeviceinformation)
 * [`trackEvent(...)`](#trackevent)
+* [`loadInlineInapp(...)`](#loadinlineinapp)
+* [`addListener('EmarsysInAppDeepLink', ...)`](#addlisteneremarsysinappdeeplink)
+* [`addListener('EmarsysInAppApplicationEvent', ...)`](#addlisteneremarsysinappapplicationevent)
+* [`addListener('EmarsysPushDeepLink', ...)`](#addlisteneremarsyspushdeeplink)
+* [`addListener('EmarsysPushApplicationEvent', ...)`](#addlisteneremarsyspushapplicationevent)
+* [`addListener('EmarsysPushNotificationReceived', ...)`](#addlisteneremarsyspushnotificationreceived)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -258,6 +264,99 @@ trackEvent(options?: { eventName: string; eventAttributes: any; } | undefined) =
 | **`options`** | <code>{ eventName: string; eventAttributes: any; }</code> |
 
 **Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
+
+--------------------
+
+
+### loadInlineInapp(...)
+
+```typescript
+loadInlineInapp(data: { inAppName: string; }) => Promise<void>
+```
+
+| Param      | Type                                |
+| ---------- | ----------------------------------- |
+| **`data`** | <code>{ inAppName: string; }</code> |
+
+--------------------
+
+
+### addListener('EmarsysInAppDeepLink', ...)
+
+```typescript
+addListener(eventName: 'EmarsysInAppDeepLink', listenerFunc: (event: PushMessageEvent) => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+```
+
+| Param              | Type                                                                              |
+| ------------------ | --------------------------------------------------------------------------------- |
+| **`eventName`**    | <code>'EmarsysInAppDeepLink'</code>                                               |
+| **`listenerFunc`** | <code>(event: <a href="#pushmessageevent">PushMessageEvent</a>) =&gt; void</code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+
+--------------------
+
+
+### addListener('EmarsysInAppApplicationEvent', ...)
+
+```typescript
+addListener(eventName: 'EmarsysInAppApplicationEvent', listenerFunc: (event: PushMessageEvent) => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+```
+
+| Param              | Type                                                                              |
+| ------------------ | --------------------------------------------------------------------------------- |
+| **`eventName`**    | <code>'EmarsysInAppApplicationEvent'</code>                                       |
+| **`listenerFunc`** | <code>(event: <a href="#pushmessageevent">PushMessageEvent</a>) =&gt; void</code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+
+--------------------
+
+
+### addListener('EmarsysPushDeepLink', ...)
+
+```typescript
+addListener(eventName: 'EmarsysPushDeepLink', listenerFunc: (event: PushMessageEvent) => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+```
+
+| Param              | Type                                                                              |
+| ------------------ | --------------------------------------------------------------------------------- |
+| **`eventName`**    | <code>'EmarsysPushDeepLink'</code>                                                |
+| **`listenerFunc`** | <code>(event: <a href="#pushmessageevent">PushMessageEvent</a>) =&gt; void</code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+
+--------------------
+
+
+### addListener('EmarsysPushApplicationEvent', ...)
+
+```typescript
+addListener(eventName: 'EmarsysPushApplicationEvent', listenerFunc: (event: PushMessageEvent) => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+```
+
+| Param              | Type                                                                              |
+| ------------------ | --------------------------------------------------------------------------------- |
+| **`eventName`**    | <code>'EmarsysPushApplicationEvent'</code>                                        |
+| **`listenerFunc`** | <code>(event: <a href="#pushmessageevent">PushMessageEvent</a>) =&gt; void</code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+
+--------------------
+
+
+### addListener('EmarsysPushNotificationReceived', ...)
+
+```typescript
+addListener(eventName: 'EmarsysPushNotificationReceived', listenerFunc: (event: PushMessageEvent) => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+```
+
+| Param              | Type                                                                              |
+| ------------------ | --------------------------------------------------------------------------------- |
+| **`eventName`**    | <code>'EmarsysPushNotificationReceived'</code>                                    |
+| **`listenerFunc`** | <code>(event: <a href="#pushmessageevent">PushMessageEvent</a>) =&gt; void</code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
 
 --------------------
 
