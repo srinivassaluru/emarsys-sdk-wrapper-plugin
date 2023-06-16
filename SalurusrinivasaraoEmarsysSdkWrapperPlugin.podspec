@@ -14,9 +14,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target  = '13.0'
   s.dependency 'Capacitor'
   s.dependency 'EmarsysSDK', '3.2.3'
-  s.dependency 'FirebaseCore'
-  s.dependency 'Firebase/Messaging'
-  s.dependency 'FirebaseMessaging'
-  s.dependency 'Firebase/InAppMessaging'
   s.swift_version = '5.1'
 end
