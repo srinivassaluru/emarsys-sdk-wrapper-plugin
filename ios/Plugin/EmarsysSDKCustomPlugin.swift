@@ -280,16 +280,17 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
     
     // Custom Events
     
-    @objc func trackCustomEvent(_ call: CAPPluginCall) {
+    @objc func trackEvent(_ call: CAPPluginCall) {
+        print("Custom Event For Emarsys IOS")
         let eventAttributes = call.options["attributes"];
-        
         Emarsys.trackCustomEvent(eventName: call.getString("name")!, eventAttributes: eventAttributes as? [String : String]) {
             error in
             guard error == nil else {
+                print("Custom Event Failed for Emarsys IOS")
                 call.reject(error!.localizedDescription)
                 return
             }
-            
+            print("Custom Event Success for Emarsys IOS")
             call.resolve();
         }
     }
