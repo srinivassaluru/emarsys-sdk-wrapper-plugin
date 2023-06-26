@@ -27,14 +27,14 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
         // Hard Code Aproach For Unit Testing  Begin
         // let mobileEngageApplicationCode = "EMS4B-5A53D";
         // let merchantId = "1F634D68EE4C9C7A";
-    
+        
         // let config = EMSConfig.make { builder in
         //     builder.setMobileEngageApplicationCode(mobileEngageApplicationCode)
         //     builder.setMerchantId(merchantId)
         //     builder.enableConsoleLogLevels([EMSLogLevel.info, EMSLogLevel.warn, EMSLogLevel.error, EMSLogLevel.basic]);
         // }
         // Hard Code Approach for Unit Testing End
-
+        
         let mobileEngageApplicationCode = self.getConfigValue("mobileEngageApplicationCode") as? String;
         let merchantId = self.getConfigValue("merchantId") as? String;
         let consoleLogLevels = self.getConfigValue("consoleLogLevels") as? [String];
@@ -76,14 +76,14 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
         UNUserNotificationCenter.current().delegate = Emarsys.push
         
         let eventHandler = { eventName, payload in
-            self.sendMessage(eventName: eventName, payload: payload);
+            self.handleEvent(eventName: eventName, payload: payload);
         };
         
         Emarsys.push.notificationEventHandler = eventHandler;
         Emarsys.push.silentMessageEventHandler = eventHandler;
         Emarsys.inApp.eventHandler = eventHandler;
         Emarsys.onEventAction.eventHandler = eventHandler;
-        
+        print(eventHandler)
         Emarsys.push.silentMessageInformationBlock = {notificationInformation in
             self.sendSilentMessageInformation(block: notificationInformation);
         }
@@ -128,9 +128,7 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
                 call.reject(error!.localizedDescription)
                 return
             }
-            
             var result: PushNotificationsPermissions = .denied
-            
             if granted {
                 result = .granted
                 if(self.savedRegisterCall != nil) {
@@ -141,7 +139,6 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
             }
-            
             call.resolve(["receive": result.rawValue])
         }
     }
@@ -197,13 +194,12 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
                 call.reject(error!.localizedDescription)
                 return
             }
-            
             call.resolve();
         }
     }
     
     @objc func clearContact(_ call: CAPPluginCall) {
-
+        
         NSLog("Removing the contact from device ")
         Emarsys.clearContact { error in
             guard error == nil else {
@@ -355,9 +351,46 @@ public class EmarsysSDKCustomPlugin: CAPPlugin {
     
     // Helper
     
-    private func sendMessage(eventName: String, payload: [String: Any]?) {
-        let data: [String: Any] = ["eventName": eventName, "data": payload ?? []];
-        self.send(eventName: "event", data: data);
+    private func handleEvent(eventName: String, payload: [String: Any]?) {
+        //        let data: [String: Any] = ["eventName": eventName, "data": payload ?? []];
+        //        self.send(eventName: "DeepLink", data: data);
+        if eventName == "DeepLink" {
+            guard let urlString = payload?["url"] as? String,
+                  let url = URL(string: urlString) else {
+                return
+            };
+            let urlString1 = url.absoluteString;
+            
+            let jsonObject: [String: Any] = [
+                "actionType":"DeepLink",
+                "url": urlString1,
+                "pushType": "pushNotification",
+                "device": "ios"
+            ]
+            print(jsonObject);
+            do {
+                self.notifyListeners("EmarsysPushDeepLink", data: jsonObject);
+            }
+        }else{
+            // Add a new key-value pair
+            guard let urlString = payload?["url"] as? String,
+                  let url1 = URL(string: urlString) else {
+                return
+            };
+            let urlString12 = url1.absoluteString;
+            let data: [String: Any] = ["eventName": "inAppBrowser",
+                                       "actionType":"AppEvent",
+                                       "pushType": "pushNotification",
+                                       "device": "ios",
+                                       "url":urlString12,
+                                       "data": payload ?? []];
+            do {
+                self.notifyListeners("EmarsysPushApplicationEvent", data: data);
+            }
+            
+            
+        }
+        
     }
     
     private func sendSilentMessageInformation(block: EMSNotificationInformation) {
