@@ -207,19 +207,25 @@ public class EmarsysSDKCustomPlugin extends Plugin {
                 if (s.equals("inline")) {
                     String title = jsonObject.getString("title");
                     String body = jsonObject.getString("body");
+                    String shouldShow = jsonObject.getString("shouldShow");
+                    String status = jsonObject.getString("status");
+                    String icon = jsonObject.getString("icon");
+
 
                     dataJson.put("actionType", "OnEventAction");
                     dataJson.put("device", "android");
                     dataJson.put("eventName", s);
-
                     dataJson.put("title", title);
+                    dataJson.put("shouldShow", shouldShow);
+                    dataJson.put("status", status);
+                    dataJson.put("icon", icon);
                     dataJson.put("body", body);
-                    dataJson.put("stigifiedData", jsonObject.toString());
+                    dataJson.put("stringifiedData", jsonObject.toString());
                 }else{
                     dataJson.put("actionType", "OnEventAction");
                     dataJson.put("device", "android");
                     dataJson.put("eventName", s);
-                    dataJson.put("stigifiedData", jsonObject.toString());
+                    dataJson.put("stringifiedData", jsonObject.toString());
                 }
 
                 notifyListeners("EmarsysInAppApplicationEvent", dataJson);
