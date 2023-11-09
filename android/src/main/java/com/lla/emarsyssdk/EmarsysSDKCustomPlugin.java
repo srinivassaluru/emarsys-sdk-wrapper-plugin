@@ -51,14 +51,17 @@ public class EmarsysSDKCustomPlugin extends Plugin {
 
     @Override
     public void load() {
+        String mobileEngageApplicationCode = getConfig().getString("mobileEngageApplicationCode");
+        String merchantId = getConfig().getString("merchantId");
+
         notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         emarsysPushNotification = new EmarsysPushNotification();
 
         config =
             new EmarsysConfig.Builder()
                 .application(this.getActivity().getApplication()) //
-                .applicationCode("EMSD5-99166")
-                .merchantId("1F634D68EE4C9C7A")
+                .applicationCode(mobileEngageApplicationCode)
+                .merchantId(merchantId)
                 .enableVerboseConsoleLogging()
                 .build();
 
